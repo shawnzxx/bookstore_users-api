@@ -1,13 +1,12 @@
 package users
 
 import (
-	"net/http"
-	"strconv"
-
 	"github.com/gin-gonic/gin"
 	"github.com/shawnzxx/bookstore_users-api/domain/users"
 	"github.com/shawnzxx/bookstore_users-api/services"
 	"github.com/shawnzxx/bookstore_users-api/utils/errors"
+	"net/http"
+	"strconv"
 )
 
 func CreateUser(c *gin.Context) {
@@ -27,6 +26,7 @@ func CreateUser(c *gin.Context) {
 }
 
 func GetUser(c *gin.Context) {
+	//convert  string to decimal
 	userId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
 	if err != nil {
 		restErr := errors.NewBadRequestError("user id should be a number")

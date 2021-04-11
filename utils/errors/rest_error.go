@@ -15,3 +15,11 @@ func NewBadRequestError(message string) *RestErr {
 		Error:   "bad_request",
 	}
 }
+
+func NewInternalServerError(message string) *RestErr {
+	return &RestErr{
+		Message: message,
+		Status:  http.StatusInternalServerError,
+		Error:   "internal_server_error",
+	}
+}

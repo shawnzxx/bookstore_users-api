@@ -2,28 +2,45 @@ package users_db
 
 import (
 	"database/sql"
-	"log"
-	"time"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
+	"os"
+	"time"
+)
+
+const (
+	mysqlUsersUsername = "mysql_users_username"
+	mysqlUsersPassword = "mysql_users_password"
+	mysqlUsersHost     = "mysql_users_host"
+	mysqlUsersSchema   = "mysql_users_schema"
 )
 
 //DbConn - export connected DbConn object
-var dbContext *sql.DB
+var (
+	DbContext *sql.DB
+	username  = os.Getenv(mysqlUsersUsername)
+	password  = os.Getenv(mysqlUsersPassword)
+	host      = os.Getenv(mysqlUsersHost)
+	schema    = os.Getenv(mysqlUsersSchema)
+)
 
 //SetupDatabase - connect to the db
 func SetupDatabase() {
 	var err error
-	dbContext, err = sql.Open("mysql", "root:Passw0rd123!@tcp(127.0.0.1:3306)/users_db?charset=utf8")
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8",
+		username, password, host, schema)
+	DbContext, err = sql.Open("mysql", connectionString)
 	if err != nil {
 		panic(err)
 	}
-	if err = dbContext.Ping(); err != nil {
+	// test ping db after connect to the database
+	if err = DbContext.Ping(); err != nil {
 		panic(err)
 	}
-
-	dbContext.SetMaxOpenConns(3)
-	dbContext.SetMaxIdleConns(3)
-	dbContext.SetConnMaxLifetime(60 * time.Second)
+	DbContext.SetMaxOpenConns(3)
+	DbContext.SetMaxIdleConns(3)
+	DbContext.SetConnMaxLifetime(60 * time.Second)
 
 	log.Println("database successfully configured")
 }
