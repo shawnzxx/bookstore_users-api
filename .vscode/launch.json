@@ -5,11 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Package",
+            "name": "Launch",
             "type": "go",
             "request": "launch",
-            "mode": "debug",
-            "program": "${workspaceFolder}"
+            "mode": "auto",
+            "program": "${workspaceFolder}",
+            "env": {
+                "mysql_users_username":"root",
+                "mysql_users_password":"Passw0rd123!",
+                "mysql_users_host":"127.0.0.1:3306",
+                "mysql_users_schema":"users_db"
+            }
         }
     ]
 }

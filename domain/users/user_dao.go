@@ -2,15 +2,16 @@ package users
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/shawnzxx/bookstore_users-api/infrastructure/mysql/users_db"
 	"github.com/shawnzxx/bookstore_users-api/utils/date_utils"
 	"github.com/shawnzxx/bookstore_users-api/utils/errors"
-	"strings"
 )
 
 const (
 	indexUniqueEmail = "email_UNIQUE"
-	errorNoRows = "no rows in result set"
+	errorNoRows      = "no rows in result set"
 	queryInsertUser  = "INSERT INTO users(first_name, last_name, email, date_created) VALUES(?,?,?,?)"
 	queryGetUser     = "SELECT id, first_name, last_name, email, date_created FROM users WHERE id=?"
 )
@@ -24,7 +25,8 @@ func (user *User) Get() *errors.RestErr {
 
 	result := stmt.QueryRow(user.Id)
 	if err := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated); err != nil {
-		if strings.Contains(err.Error(), errorNoRows){
+		fmt.Println(err)
+		if strings.Contains(err.Error(), errorNoRows) {
 			return errors.NewNotFoundError(fmt.Sprintf("user %d not found", user.Id))
 		}
 		return errors.NewInternalServerError(
@@ -44,6 +46,7 @@ func (user *User) Save() *errors.RestErr {
 	user.DateCreated = date_utils.GetNowString()
 	insertResult, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.DateCreated)
 	if err != nil {
+		fmt.Println(err)
 		if strings.Contains(err.Error(), indexUniqueEmail) {
 			return errors.NewBadRequestError(
 				fmt.Sprintf("email %s alreadt excists", user.Email))
