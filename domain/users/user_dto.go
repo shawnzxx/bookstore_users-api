@@ -6,21 +6,30 @@ import (
 	"github.com/shawnzxx/bookstore_users-api/utils/errors"
 )
 
+const (
+	StatusActive = "active"
+)
+
 type User struct {
 	Id          int64  `json:"id"`
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`
 	Email       string `json:"email"`
 	DateCreated string `json:"date_created"`
+	Status      string `json:"status"`
+	Password    string `json:"password"`
 }
 
 func (user *User) Validate() *errors.RestErr {
 	user.FirstName = strings.TrimSpace(strings.ToLower(user.FirstName))
 	user.LastName = strings.TrimSpace(strings.ToLower(user.LastName))
 	user.Email = strings.TrimSpace(strings.ToLower(user.Email))
-	// no need to implement in here since DB is not null filed
-	// if user.Email == "" {
-	// 	return errors.NewBadRequestError("invalid email address")
-	// }
+	if user.Email == "" {
+		return errors.NewBadRequestError("invalid email address")
+	}
+	user.Password = strings.TrimSpace(user.Password)
+	if user.Password == "" {
+		return errors.NewBadRequestError("invalid password")
+	}
 	return nil
 }
