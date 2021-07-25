@@ -8,6 +8,7 @@ import (
 	"github.com/shawnzxx/bookstore_users-api/utils/mysql_utils"
 )
 
+// database access layer
 const (
 	queryInsertUser       = "INSERT INTO users(first_name, last_name, email, date_created, status, password) VALUES(?,?,?,?,?,?);"
 	queryGetUser          = "SELECT id, first_name, last_name, email, date_created, status FROM users WHERE id=?;"

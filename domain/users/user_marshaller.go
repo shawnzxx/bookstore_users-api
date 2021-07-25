@@ -2,6 +2,8 @@ package users
 
 import "encoding/json"
 
+// define how is your domain DTO presented to the final user
+// here we have PublicUser and PrivateUser return different set of data
 type PublicUser struct {
 	Id          int64  `json:"id"`
 	DateCreated string `json:"date_created"`
@@ -18,7 +20,8 @@ type PrivateUser struct {
 }
 
 func (user *User) Marshall(isPublic bool) interface{} {
-	// 1st way: assign value one by one
+	// if is public return public set of data
+	// here we use 1st way: assign value one by one
 	if isPublic {
 		return PublicUser{
 			Id:          user.Id,
@@ -26,7 +29,9 @@ func (user *User) Marshall(isPublic bool) interface{} {
 			Status:      user.Status,
 		}
 	}
-	// 2nd way: this way need both source and destination struct have same json defination keys
+	// else return pirvate set of data
+	// here we use 2nd way: this way need both source(User) and destination(PrivateUser) struct object
+	// have same json defination keys, ex: `json:"last_name"`
 	userJson, _ := json.Marshal(user)
 	var privateUser PrivateUser
 	json.Unmarshal(userJson, &privateUser)

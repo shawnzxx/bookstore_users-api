@@ -10,7 +10,7 @@ const (
 	StatusActive = "active"
 )
 
-type Users []User
+// domain DTO object
 type User struct {
 	Id          int64  `json:"id"`
 	FirstName   string `json:"first_name"`
@@ -20,6 +20,9 @@ type User struct {
 	Status      string `json:"status"`
 	Password    string `json:"password"`
 }
+
+// Users define as array of User, later in other function can user Users directly
+type Users []User
 
 func (user *User) Validate() *errors.RestErr {
 	user.FirstName = strings.TrimSpace(strings.ToLower(user.FirstName))

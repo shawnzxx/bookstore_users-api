@@ -7,7 +7,31 @@ import (
 	"github.com/shawnzxx/bookstore_users-api/utils/errors"
 )
 
-func CreateUser(user users.User) (*users.User, *errors.RestErr) {
+var (
+	UserServices usersServiceInterface = &usersService{}
+)
+
+type usersService struct{}
+
+type usersServiceInterface interface {
+	GetUser(int64) (*users.User, *errors.RestErr)
+	CreateUser(users.User) (*users.User, *errors.RestErr)
+	UpdateUser(bool, users.User) (*users.User, *errors.RestErr)
+	DeleteUser(int64) *errors.RestErr
+	Search(string) (users.Users, *errors.RestErr)
+}
+
+func (s *usersService) GetUser(userId int64) (*users.User, *errors.RestErr) {
+	var user = &users.User{
+		Id: userId,
+	}
+	if err := user.Get(); err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (s *usersService) CreateUser(user users.User) (*users.User, *errors.RestErr) {
 	if err := user.Validate(); err != nil {
 		return nil, err
 	}
@@ -20,55 +44,41 @@ func CreateUser(user users.User) (*users.User, *errors.RestErr) {
 	return &user, nil
 }
 
-func GetUser(userId int64) (*users.User, *errors.RestErr) {
-	var user = &users.User{
-		Id: userId,
-	}
-	if err := user.Get(); err != nil {
-		return nil, err
-	}
-	return user, nil
-}
-
-func UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr) {
+func (s *usersService) UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr) {
 	// get user from db by Id
-	curUser, err := GetUser(user.Id)
-	if err != nil {
-		return nil, err
-	}
-	// validate pass in body
-	if err := user.Validate(); err != nil {
+	current := &users.User{Id: user.Id}
+	if err := current.Get(); err != nil {
 		return nil, err
 	}
 	//if is partial only update the fileds not empty
 	if isPartial {
 		if user.FirstName != "" {
-			curUser.FirstName = user.FirstName
+			current.FirstName = user.FirstName
 		}
 		if user.LastName != "" {
-			curUser.LastName = user.LastName
+			current.LastName = user.LastName
 		}
 		if user.Email != "" {
-			curUser.Email = user.Email
+			current.Email = user.Email
 		}
 	} else {
-		curUser.FirstName = user.FirstName
-		curUser.LastName = user.LastName
-		curUser.Email = user.Email
+		current.FirstName = user.FirstName
+		current.LastName = user.LastName
+		current.Email = user.Email
 	}
 
-	if err := curUser.Update(); err != nil {
+	if err := current.Update(); err != nil {
 		return nil, err
 	}
-	return curUser, nil
+	return current, nil
 }
 
-func DeleteUser(userId int64) *errors.RestErr {
+func (s *usersService) DeleteUser(userId int64) *errors.RestErr {
 	user := &users.User{Id: userId}
 	return user.Delete()
 }
 
-func Search(status string) (users.Users, *errors.RestErr) {
+func (s *usersService) Search(status string) (users.Users, *errors.RestErr) {
 	dao := &users.User{}
 	return dao.FindByStatus(status)
 }
