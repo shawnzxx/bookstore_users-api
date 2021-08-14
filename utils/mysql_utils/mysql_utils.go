@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	errorNoRows = "no rows in result set"
+	ErrorNoRows = "no rows in result set"
 )
 
 func ParseError(err error) *errors.RestErr {
@@ -17,7 +17,7 @@ func ParseError(err error) *errors.RestErr {
 	// if it is not sql error
 	if !ok {
 		// check if error message contain below sentense
-		if strings.Contains(err.Error(), errorNoRows) {
+		if strings.Contains(err.Error(), ErrorNoRows) {
 			return errors.NewNotFoundError("no record matching with given id")
 		}
 		// other unknown error
