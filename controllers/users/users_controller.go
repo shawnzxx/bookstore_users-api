@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/shawnzxx/bookstore_oauth-go/oauth"
 	"github.com/shawnzxx/bookstore_users-api/domain/users"
 	"github.com/shawnzxx/bookstore_users-api/services"
 	"github.com/shawnzxx/bookstore_users-api/utils/errors"
@@ -27,17 +28,31 @@ func Create(c *gin.Context) {
 }
 
 func Get(c *gin.Context) {
+	// before get resources we need to validate authentication
+	if err := oauth.AuthenticateRequest(c.Request); err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
 	userId, idErr := getUserId(c.Param("user_id"))
 	if idErr != nil {
 		c.JSON(idErr.Status, idErr)
 		return
 	}
-	result, getErr := services.UserServices.GetUser(userId)
+	user, getErr := services.UserServices.GetUser(userId)
 	if getErr != nil {
 		c.JSON(getErr.Status, getErr)
 		return
 	}
-	c.JSON(http.StatusOK, result.Marshall(c.GetHeader("X-Public") == "true"))
+
+	//check if current access token owner is equal to passed user_id param
+	//means is logined in user retrieve his own info, we return full user info
+	if oauth.GetCallerId(c.Request) == user.Id {
+		c.JSON(http.StatusOK, user.Marshall(false))
+		return
+	}
+	//otherwise we check is public request or private request
+	//return full info only when is private internal call
+	c.JSON(http.StatusOK, user.Marshall(oauth.IsPublic(c.Request)))
 }
 
 func Update(c *gin.Context) {
