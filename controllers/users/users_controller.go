@@ -33,6 +33,13 @@ func Get(c *gin.Context) {
 		c.JSON(err.Status, err)
 		return
 	}
+	//caller is not authorized to access this resource
+	if callerId := oauth.GetCallerId(c.Request); callerId == 0 {
+		err := errors.NewUnauthorizedError("can not get callerId")
+		c.JSON(err.Status, err)
+		return
+	}
+
 	userId, idErr := getUserId(c.Param("user_id"))
 	if idErr != nil {
 		c.JSON(idErr.Status, idErr)
