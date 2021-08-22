@@ -43,6 +43,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/shawnzxx/bookstore_oauth-go v0.1.0 h1:MiuCspZE6XlSQ/+vljVmOcorX+ZkzzBKFDeSnoE4QlI=
 github.com/shawnzxx/bookstore_oauth-go v0.1.0/go.mod h1:5M2oJRaQQsFPqEEYJNheUfzevsCQ8Ood1dFq6uUo6fs=
+github.com/shawnzxx/bookstore_utils-go v0.0.0-20210822032222-7f6056ce5949 h1:6Ehm9Ssqye2qFHi1jtpnjBRN9P4ZClS5kdrIZd6WVNE=
+github.com/shawnzxx/bookstore_utils-go v0.0.0-20210822032222-7f6056ce5949/go.mod h1:JUf8oH1ZM/tLE05atmyUoNB7bXyjaNfy82BNG603oRU=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
