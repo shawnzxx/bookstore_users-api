@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/shawnzxx/bookstore_users-api/infrastructure/mysql/users_db"
-	"github.com/shawnzxx/bookstore_users-api/logger"
 	"github.com/shawnzxx/bookstore_users-api/utils/mysql_utils"
+	"github.com/shawnzxx/bookstore_utils-go/logger"
 	"github.com/shawnzxx/bookstore_utils-go/rest_errors"
 )
 
