@@ -1,6 +1,6 @@
 mysql_users_username=root
 mysql_users_password=Passw0rd123!
-mysql_users_host=some-mysql
+mysql_users_host=mysql
 mysql_users_schema=users_db
 ENV=dev
 PORT=8081
