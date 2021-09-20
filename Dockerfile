@@ -11,12 +11,14 @@ RUN go mod verify
 # https://stackoverflow.com/questions/52640304/standard-init-linux-go190-exec-user-process-caused-no-such-file-or-directory
 # https://stackoverflow.com/questions/62817082/how-does-cgo-enabled-affect-dynamic-vs-static-linking
 # https://www.geeksforgeeks.org/static-and-dynamic-linking-in-operating-systems/
-#here use relativeDir pattern
-RUN CGO_ENABLED=0 go build -o bookstore-user-api
+# Here use relativeDir pattern which binary file inside <WORKDIR/bookstore-users-api>
+RUN CGO_ENABLED=0 go build -o bookstore-users-api
 
 ## Deploy and run binary
 FROM alpine:latest
 WORKDIR /app
-COPY --from=builder /app/bookstore-user-api .
+# Copied to the location /app/bookstore-users-api
+COPY --from=builder /app/bookstore-users-api .
 EXPOSE 8081
-ENTRYPOINT ["./bookstore-user-api"]
+# excuted the binary inside /app/bookstore-users-api
+ENTRYPOINT ["./bookstore-users-api"]
