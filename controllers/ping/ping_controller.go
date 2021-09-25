@@ -2,7 +2,7 @@ package ping
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/shawnzxx/bookstore_utils-go/logger"
+	"github.com/shawnzxx/bookstore_utils-go/app_logger"
 	"net"
 	"net/http"
 	"os"
@@ -13,9 +13,9 @@ const (
 )
 
 var (
-	_logger = logger.GetLogger()
-	ipv4    string
-	port    int
+	logger = app_logger.GetLogger()
+	ipv4   string
+	port   int
 )
 
 func Ping(c *gin.Context) {
@@ -24,5 +24,5 @@ func Ping(c *gin.Context) {
 
 	//print out service IPs
 	ips, err := net.LookupHost(host)
-	_logger.Printf("oauth api LookupHost return: %v, error: %v\n", ips, err)
+	logger.Info("oauth api LookupHost return: %v, error: %v", ips, err)
 }

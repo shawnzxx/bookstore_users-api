@@ -6,14 +6,14 @@ import (
 )
 
 func mapUrls() {
-	_router.GET("/ping", ping.Ping)
+	router.GET("/ping", ping.Ping)
 
-	_router.POST("/users", users.Create)
-	_router.GET("/users/:user_id", users.Get)
-	_router.PUT("/users/:user_id", users.Update)
-	_router.PATCH("/users/:user_id", users.Update)
-	_router.DELETE("/users/:user_id", users.Delete)
-	_router.POST("/users/login", users.Login)
+	router.POST("/users", users.Create)
+	router.GET("/users/:user_id", users.Get)
+	router.PUT("/users/:user_id", users.Update)
+	router.PATCH("/users/:user_id", users.Update)
+	router.DELETE("/users/:user_id", users.Delete)
+	router.POST("/users/login", users.Login)
 
-	_router.GET("/internal/users/search", users.Search)
+	router.GET("/internal/users/search", users.Search)
 }

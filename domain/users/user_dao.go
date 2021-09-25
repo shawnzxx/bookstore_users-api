@@ -3,12 +3,16 @@ package users
 import (
 	"errors"
 	"fmt"
+	"github.com/shawnzxx/bookstore_utils-go/app_logger"
 	"strings"
 
 	"github.com/shawnzxx/bookstore_users-api/infrastructure/mysql/users_db"
 	"github.com/shawnzxx/bookstore_users-api/utils/mysql_utils"
-	"github.com/shawnzxx/bookstore_utils-go/logger"
 	"github.com/shawnzxx/bookstore_utils-go/rest_errors"
+)
+
+var (
+	logger = app_logger.GetLogger()
 )
 
 // database access layer
