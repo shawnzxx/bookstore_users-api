@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"log"
+	"github.com/shawnzxx/bookstore_utils-go/app_logger"
 	"os"
 	"time"
 )
@@ -23,6 +23,7 @@ var (
 	password  = os.Getenv(MysqlUsersPassword)
 	host      = os.Getenv(MysqlUsersHost)
 	schema    = os.Getenv(MysqlUsersSchema)
+	logger    = app_logger.GetLogger()
 )
 
 //SetupDatabase - connect to the db
@@ -32,7 +33,7 @@ func SetupDatabase() {
 		username, password, host, schema)
 	DbContext, err = sql.Open("mysql", connectionString)
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error(err.Error())
 	}
 	//Retry Database Connect With Docker and Go
 	//http://www.matthiassommer.it/programming/docker-compose-retry-database-connect-with-docker-and-go/
@@ -41,9 +42,9 @@ func SetupDatabase() {
 		err := DbContext.Ping()
 		if err != nil {
 			if retryCount == 0 {
-				log.Fatalf("Not able to establish connection to host %s database %s", host, schema)
+				logger.Error("Not able to establish connection to host %s database %s", host, schema)
 			}
-			log.Printf(fmt.Sprintf("Could not connect to database. Wait 2 seconds. %d retries left...", retryCount))
+			logger.Info("Could not connect to database. Wait 2 seconds. %d retries left...", retryCount)
 			retryCount--
 			time.Sleep(2 * time.Second)
 		} else {
@@ -58,5 +59,5 @@ func SetupDatabase() {
 	DbContext.SetMaxIdleConns(3)
 	DbContext.SetConnMaxLifetime(60 * time.Second)
 
-	log.Println("database successfully configured")
+	logger.Info("database successfully configured")
 }

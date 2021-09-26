@@ -1,6 +1,7 @@
 package ping
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/shawnzxx/bookstore_utils-go/app_logger"
 	"net"
@@ -19,10 +20,9 @@ var (
 )
 
 func Ping(c *gin.Context) {
-	c.String(http.StatusOK, "pong")
 	host := os.Getenv(AuthServiceHost)
 
-	//print out service IPs
-	ips, err := net.LookupHost(host)
-	logger.Info("oauth api LookupHost return: %v, error: %v", ips, err)
+	ips, _ := net.LookupHost(host)
+	pong := fmt.Sprintf("oauth api ips %v", ips)
+	c.String(http.StatusOK, pong)
 }
