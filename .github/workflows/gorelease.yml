@@ -5,8 +5,10 @@ name: goreleaser
 #  every push against the main branch of our project
 on:
   push:
+    branches:
+      - main
     tags:
-      - "v*.*.*"
+      - "*"
 
 jobs:
   goreleaser:
