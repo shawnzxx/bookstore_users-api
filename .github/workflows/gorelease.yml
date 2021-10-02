@@ -2,13 +2,19 @@
 # can follow this guide: https://docs.docker.com/ci-cd/github-actions/
 name: goreleaser
 
-#  every push against the main branch of our project
+#  every push a new tag sample like below
+#  git tag -a v1.0.2
+#  git push origin v1.0.2
 on:
   push:
-    branches:
-      - main
     tags:
       - '*'
+
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: docker.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: shawnzxx/bookstore_users-api
 
 jobs:
   goreleaser:
@@ -61,14 +67,22 @@ jobs:
           # Your GoReleaser Pro key, if you are using the 'goreleaser-pro' distribution
           # GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
-      - name: Build and push image to DockerHub
+      - name: Extract metadata (tages, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push docker image
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/bookstore_users-api:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Clear
+        if: always()
+        run: rm -f ${HOME}/.docker/config.json
