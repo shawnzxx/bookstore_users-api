@@ -1,0 +1,69 @@
+#.github/workflow/goreleaser.yml
+# can follow this guide: https://docs.docker.com/ci-cd/github-actions/
+name: Rlease to Docker Hub
+
+#  every push against the main branch of our project
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    env:
+      # This provides a temporary environment for testing the experimental features without having to commit to it's usage.
+      DOCKER_CLI_EXPERIMENTAL: "enabled"
+    steps:
+      # checks-out our repository under $GITHUB_WORKSPACE, so our workflow can access it
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # use our PAT and username to log into Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # enabled the multi-platform images
+      - name: Set up  QEMU
+        uses: docker/setup-qemu-action@v1
+
+      # the Builder step, the action uses BuildKit under the hood through a simple Buildx action
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      # set up go build env
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist
+        env:
+          # Represent github token and is auto filled
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Your GoReleaser Pro key, if you are using the 'goreleaser-pro' distribution
+          # GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+      - name: Build and push image to DockerHub
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/bookstore_users-api:latest
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
