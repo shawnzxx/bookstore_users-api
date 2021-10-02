@@ -1,12 +1,12 @@
 #.github/workflow/goreleaser.yml
 # can follow this guide: https://docs.docker.com/ci-cd/github-actions/
-name: Rlease to Docker Hub
+name: goreleaser
 
 #  every push against the main branch of our project
 on:
-  pull_request:
   push:
-    branches: [ main ]
+    tags:
+      - "v*.*.*"
 
 jobs:
   goreleaser:
@@ -19,6 +19,8 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v2
         with:
+          # Note the fetch-depth: 0 option It is required for GoReleaser to work properly.
+          # Without that, GoReleaser might fail or behave incorrectly.
           fetch-depth: 0
 
       # use our PAT and username to log into Docker Hub
@@ -43,6 +45,7 @@ jobs:
         with:
           go-version: 1.17
 
+      # refer to here: https://goreleaser.com/ci/actions/
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
